@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Design tokens.
+
+  The palette is a ledger, not a trading terminal: bone paper, ink, and three
+  muted earth tones for severity. Severity is never carried by colour alone —
+  every row also states its band in words, shows a directional glyph, and varies
+  the weight of its gutter rule.
+*/
+:root {
+  --paper: #f2f1ec;
+  --surface: #fbfaf8;
+  --ink: #1b2027;
+  --ink-soft: #5b6570;
+  --ink-faint: #8b939c;
+  --rule: #ddddd6;
+  --rule-strong: #c3c4bb;
+  --accent: #1f5f4b;
+  --high: #8c3320;
+  --meaningful: #9a6b1f;
+  --watch: #4a5560;
+
+  --font-display: 'Newsreader', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #14171a;
+    --surface: #1b1f23;
+    --ink: #ecebe5;
+    --ink-soft: #a3aab2;
+    --ink-faint: #7d858d;
+    --rule: #2c3238;
+    --rule-strong: #3d444b;
+    --accent: #6ab598;
+    --high: #e08a72;
+    --meaningful: #d9ac63;
+    --watch: #a3aab2;
+  }
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* Numbers must line up column to column; that is most of what makes a ledger
+   readable at a glance. */
+.numeral {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: -0.01em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--rule-strong);
+  z-index: 50;
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+/* The one orchestrated motion in the product: rows arrive in sequence when a
+   fresh diff lands, so the eye is drawn down the feed in priority order. */
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.settle {
+  animation: settle 320ms cubic-bezier(0.2, 0.6, 0.2, 1) both;
+}
+
+@keyframes pulse-rule {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+.loading-rule {
+  animation: pulse-rule 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settle,
+  .loading-rule {
+    animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
